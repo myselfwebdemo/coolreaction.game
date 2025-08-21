@@ -1,0 +1,890 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{margin: 0; background: #000; font-family: futura; letter-spacing: 1;}
+        :root {
+            --c-primary: rgb(0,255,166);
+            --c-secondary: rgb(0,81,255);
+            --c-complimentary: rgb(255,0,89);
+            --blur: 7px;
+        }
+        body {
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            background: none;
+        }
+        .bg {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% -60%, rgb(0,255,166,1), transparent 60%),
+                radial-gradient(circle at 50% -60%, rgb(0,81,255,1), transparent 50%),
+                #000;
+            box-shadow:
+                inset 0 -1vh 3vh var(--c-primary),
+                inset 0 -.6vh .5vh var(--c-secondary);
+            z-index: -999;
+        }
+        .game-setup {
+            top: 0;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 60%;
+            height: fit-content;
+            margin-top: 40%;
+            padding: 8vh 0 2vh 0;
+            border-radius: 1vh;
+            box-shadow: 
+                0 1vh 2vh rgb(0,255,166,1), 
+                inset 0 -1.2vh 3vh var(--c-primary),
+                inset 0 -.5vh .5vh var(--c-secondary);
+            color: white;
+            /* background: blue; */
+            z-index: 999;
+        }
+        .game-setup div {
+            position: relative;
+            /* height: fit-content; */
+        }
+        input[type=range] {
+            --move: -13vh;
+            --top: -.1vh;
+            --dotSize: .7vh;
+            --dotSpace: 100%;
+            --round: 35;
+            -webkit-appearance: none;
+            appearance: none;
+            background: none;
+            margin-top: .7vh;
+            height: 1vh;
+            border: none;
+            border-bottom: .4vh solid rgb(0,255,166,.2);
+            /* border-image: repeating-radial-gradient(
+                to right, 
+                var(--c-primary) 0 var(--dotSize), 
+                transparent var(--dotSize) var(--dotSpace)
+            ) var(--round) round;
+            -webkit-border-image: repeating-radial-gradient(
+                circle at center, 
+                var(--c-primary) 0 var(--dotSize), 
+                transparent var(--dotSize) var(--dotSpace)
+            ) var(--round) round; */
+            background: black;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            --size: 4vh;
+            width: var(--size);
+            height: var(--size);
+            background: url(assets/unk/roller.png);
+            background-size: cover;
+            /* background-position: center; */
+            background-repeat: no-repeat;
+            transform: translateY(1.5vh) rotateZ(45deg) scaleX(-1);
+        }
+        .game-setup label {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            background: none;
+        }
+        .game-setup span {
+            font-size: xx-large;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, var(--c-primary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.8vh;
+        }
+        .game-setup h3 {
+            margin: 11.5vh 0 1vh 0;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, var(--c-complimentary), var(--c-complimentary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .unit-style {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2vh;
+            width: 90%;
+            height: 12vh;
+            padding: 3vh 0 7vh 0;
+            background: none;
+            mask: linear-gradient(to bottom,transparent,black 30% 70%,transparent);
+            overflow: scroll;
+            z-index: 999;
+        }
+        .unit-style::-webkit-scrollbar {
+            display: none;
+        }
+        #uslta {
+            --theme: var(--c-complimentary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 13vw;
+            height: 3vh;
+            margin-top: 4vh;
+            border: solid .35vh var(--theme);
+            /* border-top: solid .4vh linear-gradient(to right, red, black, red); */
+            box-shadow: 
+                inset 0 -.4vh 1vh var(--theme),
+                0 .2vh .6vh var(--theme);
+            border-top: none;
+            border-radius: 1vh;
+            padding: 1vh;
+            color: lightgray; 
+            transition: 1s;
+        }
+        #uslta::before {
+            content: '';
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 97%;
+            height: .35vh;
+            border-radius: 1vh 1vh 0 0;
+            transform: translate(1.5%,.01vh);
+            background: linear-gradient(to right, var(--theme),transparent,transparent,var(--theme));
+            /* transition-delay: .4s; */
+        }
+        #uslta:hover > img {
+            cursor: pointer;
+            transform: translateY(-40%) scale(1.1);
+        }
+        #uslta img {
+            --size: 13vw;
+            width: var(--size);
+            height: var(--size);
+            background: none;
+            transform: translateY(-30%);
+            transition: .5s;
+        }
+        .container {
+            margin: auto;
+            width: 100%;
+            height: 73%;
+            transform: translateY(13%);
+            background: none;
+            z-index: 0;
+        } 
+        canvas {
+            width: 100%;
+            height: inherit;  
+            background: none;  
+        }
+        #game-setup-btn {
+            top: 0;
+            position: absolute;
+            filter: invert(100%) brightness(180%);
+            margin: 9.4vh 0 0 0;
+            width: fit-content;
+            height: fit-content;
+            background: none;
+        }
+        #game-setup-btn img {
+            --size: 4vh; 
+            width: var(--size);
+            height: var(--size);
+            background: none;
+        }
+        #timer {
+            top: 0;
+            position: absolute;
+            margin-top: 2vh;
+            background: none;
+            color: var(--c-complimentary);
+            font-family: futura;
+            font-weight: 600;
+            font-size: xx-large;
+            text-transform: uppercase;
+        }
+        #chosen, #target {
+            --offset: 28vh;
+            top: 0;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 13vh;
+            margin-top: 2vh;
+            background: none;
+        }
+        #chosen {
+            margin-right: var(--offset);
+        }
+        #target {
+            margin-left: var(--offset);
+        }
+        #chosen img, #target img {
+            --size: 4.15vh;
+            width: var(--size);
+            height: var(--size);
+            padding: 1vh;
+            background: none;
+            /* border: solid .3vh var(--c-primary); */
+            border-radius: 1vh;
+        }
+        #chosen p, #target p {
+            color: lightgray;
+            font-size: x-small;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: .2vh;
+            background: none;
+        }
+        button {
+            width: 100%;
+            height: 15vh;
+            border: none;
+            font-family: futura;
+            font-weight: 600;
+            font-size: x-large;
+            text-transform: uppercase;
+            background: radial-gradient(circle at 50% 350%, var(--c-primary), transparent 80%);
+            z-index: 0;
+            transition: .3s;
+        }
+        button:hover > span {
+            cursor: pointer;
+            transform: translateY(-1vh);
+            text-shadow: 0 0vh .2vh var(--c-primary);
+        }
+        button span {
+            background: linear-gradient(to bottom, var(--c-primary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: .3s;
+        }
+        .end-container {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #00000049;
+            color: #fff;
+            backdrop-filter: blur(var(--blur));
+            -webkit-backdrop-filter: blur(var(--blur));
+            transition: 1s;
+            z-index: 999;
+        }
+        #wanim-canvas {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% -100%, var(--c-primary) 30%, rgb(0,255,166,.1), transparent 100%),
+                /* radial-gradient(circle at 50% -60%, rgb(0,81,255,1), transparent 50%), */
+                transparent;
+            z-index: 0;
+        }
+        #verdict {
+            margin: 0 0 3vh 0;
+            background: linear-gradient(to bottom, var(--c-primary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: futura;
+            font-size: 10vh;
+            text-transform: uppercase;
+            z-index: 999;
+        }
+        #retry-btn {
+            --xn: 10;
+            width: 60%;
+            height: 7vh;
+            background: radial-gradient(circle at 50% 400%, var(--c-primary), #000000a7 80%);
+            border-radius: 1vh;
+            box-shadow: 
+                0 1vh 2vh rgb(0,255,166,1), 
+                inset 0 -1.2vh 3vh var(--c-primary),
+                inset 0 -.5vh .5vh var(--c-secondary);
+            transition: .3s;
+            z-index: 999;
+        }
+        #retry-btn:hover {
+            box-shadow: 
+                0 1.7vh 2vh rgb(0,255,166,1), 
+                inset 0 -1.2vh 3vh var(--c-primary),
+                inset 0 -.5vh .5vh var(--c-secondary);
+        }
+        #retry-btn span {
+            background: linear-gradient(to bottom, var(--c-primary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: large;
+            transition: .3s;
+        }
+        #alert {
+            top: 0;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            /* background: 
+                radial-gradient(circle at -100% -0%, rgb(255,0,89,.5), #00000049); */
+            background: #00000049;
+            backdrop-filter: blur(var(--blur));
+            -webkit-backdrop-filter: blur(var(--blur));
+        }
+        #alert-h1 {
+            text-transform: uppercase;
+            font-size: xx-large;
+            background: linear-gradient(to bottom, var(--c-primary), transparent);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+    <title>Cool Reaction Game</title>
+</head>
+<body>
+    <div class="bg"></div>
+
+    <div class="game-setup">
+        <div>
+            <label>
+                <span id="nunitsvis">units: 10</span>
+                <input type="range" name="nofunits" id="nofunits" min="5" max="30" value="10">
+            </label>
+        </div>
+        <h3>select style</h3>
+        <div class="unit-style"></div>
+    </div>
+
+    <div class="container">
+        <canvas id="space"></canvas>
+    </div>
+    <span id="timer"></span>
+    <button id="start-btn"><span id="bottom-btn">set</span></button>
+
+    <div class="end-container">
+        <h1 id="verdict"></h1>
+        <button id="retry-btn"><span>play again</span></button>
+    </div>
+    <script>
+        const d = document
+        
+        const c = 'colored';
+        const p = 'plain';
+        const s = 'selected';
+        const u = 'unk'
+
+        let object = 'cube';
+        let maxAngle = Math.PI / 3.5;
+        var imageScale = 1.3
+
+        const objects = [
+            'cube',
+            'crown',
+            'disco-ball',
+            'robot',
+            'rubber-duck',
+            'frog-px',
+            'croc',
+            'freaked-croc',
+            'monkey',
+            'dinosaur',
+            'monster',
+            'dragon'
+        ];
+        const unitStylingArea = d.querySelector('.unit-style')
+
+        for (let i = 0; i < objects.length; i++) {
+            const el = d.createElement('div')
+            const img = d.createElement('img')
+            
+            if (object == objects[i]) el.style.setProperty('--theme','#fff')
+            
+            function selection() {
+                object = objects[i];
+                unitStylingArea.children[i].style.setProperty('--theme','#fff')
+                console.warn('Style switched.')
+                console.log(`New style: ${object}`)
+                for (let idx = 0; idx < unitStylingArea.children.length; idx++) {
+                    if (idx !== i) {
+                        unitStylingArea.children[idx].style.setProperty('--theme','var(--c-complimentary)')
+                    }
+                }
+            }
+
+            el.id = 'uslta';
+            el.addEventListener('click', selection);
+            img.src = `assets/${c}/${objects[i]}.png`;
+
+            el.appendChild(img)
+            unitStylingArea.appendChild(el)
+        }
+        
+        const timer = d.getElementById('timer')
+        const setUpSection = d.querySelector('.game-setup');
+        const TheStartBtn = `<button id="start-btn"><span id="bottom-btn">start</span></button>`;
+        const TheSetBtn = `<button id="set-btn" onclick="closeGameSetUp()"><span id="bottom-btn">set</span></button>`;
+        var startBtn = d.getElementById('start-btn');
+        const startBtnSpan = d.getElementById('bottom-btn');
+        const canvas = d.querySelector('canvas');
+        const ctx = canvas.getContext('2d',{ alpha: true });
+        
+        const gameSpeed = 273; // equiv. > 1s // median human reaction time
+        
+        const primaryColor = '#fff';
+        const secondaryColor = 'rgb(255,0,89)';
+        const tertiaryColor = 'rgb(0,255,166)';
+        const maxMinTime = 8;
+        let initialSetUp = true
+        let win;
+        var unitnum = 0
+        var time = 0
+
+        timer.textContent = `${maxMinTime.toFixed(2)}s`
+
+        nofunits.addEventListener('input', () => {
+            const nunitsVis = d.getElementById('nunitsvis');
+            nunitsVis.textContent = `units: ${nofunits.value}`;
+            const timeLimit = nofunits.value**2 /10
+            time = Math.max(maxMinTime,timeLimit)
+            timer.textContent = `${time.toFixed(2)}s`
+        })
+        
+        startBtn.addEventListener('click', begin)
+
+        function begin() {
+            if (initialSetUp) {
+                const setupBtn = `<button onclick="location.reload(); nofunits.value = 10" id="game-setup-btn"><img src="assets/${u}/setting.png" alt="N Balls"></button>`
+                const chosen = `<div id="chosen"><img src="assets/${p}/${object}.png"><p>selected<br>(you choose)</p></div>`;
+                const target = `<div id="target"><img src="assets/${s}/${object}.png"><p>target<br>(look for it)</p></div>`;
+                
+                timer.insertAdjacentHTML('beforebegin', setupBtn)
+                timer.insertAdjacentHTML('afterend', chosen)
+                timer.insertAdjacentHTML('afterend', target)
+                initialSetUp = false
+            }
+            canvas.style.display = 'block'
+            startBtn.onclick = null;
+            startBtnSpan.textContent = 'start';
+            setUpSection.style.display = 'none';
+            unitnum = nofunits.value
+            GAME();
+        }
+
+        class Ball {
+            constructor(x,y,r,source) {
+                this.x = x
+                this.y = y
+                this.r = r
+                this.source = source
+                this.unitImage = new Image();
+                this.unitImage.src;
+                this.angle = (Math.random() * 2 - 1) * (maxAngle)
+            }
+            draw(ctx) {
+                const size = this.r * imageScale * 2
+                ctx.save();
+                ctx.translate(this.x, this.y)
+                ctx.rotate(this.angle);
+                ctx.drawImage(
+                    this.unitImage, 
+                    -size / 2,
+                    -size / 2,
+                    size,
+                    size
+                )
+                ctx.restore();
+            }
+        }
+
+        function GAME() {1
+            const defaultSource = `assets/${c}/${object}.png`;
+            const chosenBallSource = `assets/${p}/${object}.png`;
+            const randBallSource = `assets/${s}/${object}.png`;
+
+            startBtn.removeEventListener('click', begin);
+
+            const timeLimit = nofunits.value**2 /20
+            time = Math.max(maxMinTime,timeLimit)
+    
+            var units = []
+            const r = 14.6
+            const ofsVal = 3
+            const ofs = ofsVal*r
+    
+            function ValidatePos(x,y) {
+                for (const unit of units) {
+                    const distance = Math.sqrt((x - unit.x)**2 + (y - unit.y)**2)
+                    if (distance < r * 2 * imageScale * 1.3 ) return false;
+                }
+                return true;
+            }
+            function spawnBalls() {
+                units = []
+                for (let i = 0; i < unitnum; i++) {
+                    IsValid = false
+                    while (!IsValid) {
+                        xPos = Math.floor(Math.random() * (canvas.clientWidth - ofs*2)) + ofs
+                        yPos = Math.floor(Math.random() * (canvas.clientHeight - ofs*2)) + ofs
+                        IsValid = ValidatePos(xPos,yPos);
+                    }
+                    let source = defaultSource;
+                    let unit = new Ball(xPos,yPos,r,source)
+                    units.push(unit)
+                }
+                drawBalls();
+                console.log('Unit source:');
+                units.forEach(unit => { console.log(unit.unitImage.src) });
+            }
+            spawnBalls();
+            
+            const endContainer = d.querySelector('.end-container')
+            const edcVerdict = d.getElementById('verdict')
+            const reTryBtn = d.getElementById('retry-btn')
+            var tapToFinish = false
+            var end = false
+            let chosenBallIdx = NaN
+            let finalBallIdx = NaN
+            let abortController = new AbortController()
+            let count = 0
+    
+            function drawBalls() {
+                units.forEach(unit => {
+                    unit.unitImage.onload = () => {
+                        unit.draw(ctx)
+                    }
+                    unit.unitImage.src = unit.source;
+                })
+            }
+            function setBallsToDefault() {
+                units.forEach(unit => {
+                    unit.unitImage.onload = () => {
+                        unit.draw(ctx)
+                    }
+                    unit.unitImage.src = defaultSource;
+                });
+            }
+            function choiceEvent(e) {
+                units.forEach((unit,idx) => {
+                    const r = canvas.getBoundingClientRect();
+                    const clickX = e.clientX - r.left
+                    const clickY = e.clientY - r.top
+                    const distance = Math.sqrt((clickX - unit.x) **2 + (clickY - unit.y) **2);
+
+                    if (distance <= unit.r * imageScale) {
+                        setBallsToDefault();
+                        FillCanvas();
+                        
+                        unit.unitImage.onload = () => {
+                            unit.draw(ctx)
+                        }
+                        unit.unitImage.src = chosenBallSource;
+                    }
+                })
+                getSelIdx();
+            };
+            function getSelIdx() {
+                units.forEach((unit,idx) => {
+                    if (unit.unitImage.src.includes(chosenBallSource)) {
+                        chosenBallIdx = idx
+                        console.log(chosenBallIdx)
+                    }
+                });
+            };
+            function addStopPoint() {
+                if (!tapToFinish) canvas.addEventListener(
+                    'click', 
+                    () => { 
+                        console.log(`Game Ended, \nChosen Ball: ${chosenBallIdx}\nLast Ball: ${finalBallIdx}`)
+                        canvas.removeEventListener('click', choiceEvent);
+                        startBtn.removeEventListener('click', initializeGame);
+
+                        end = true; 
+                        tapToFinish=true; 
+                        initializeVerdict(chosenBallIdx,finalBallIdx)
+                    }, 
+                    { signal: abortController.signal }
+                );
+            };
+            function initializeVerdict(initIdx,resIdx) {
+                endContainer.style.display = 'flex'
+                if (resIdx == initIdx) {
+                    edcVerdict.textContent = 'win'
+                    win = true
+                } else {
+                    edcVerdict.textContent = 'loss'
+                    win = false
+                }
+                winAnim();
+            }
+            function initializeGame() {
+                abortController = new AbortController();
+    
+                function Timer() { 
+                    if (!end) {
+                        if (time.toFixed(2) > 0 && !end) {
+                            time -= 0.01 
+                        } else { 
+                            end = true; 
+                            tapToFinish = true 
+                            initializeVerdict(chosenBallIdx,finalBallIdx);
+                        }
+                        timer.textContent = `${time.toFixed(2)}s`; setTimeout(Timer,10)
+                    }
+                };
+                function run() {
+                    if (!tapToFinish) {
+                        units.forEach((unit, idx) => {
+                            if (idx !== chosenBallIdx) {
+                                ctx.clearRect(unit.x - unit.r * imageScale * 1.2, unit.y - unit.r * imageScale * 1.2, unit.r * 2 * imageScale * 1.2, unit.r * 2 * imageScale * 1.2)
+                                unit.unitImage.onload = () => {
+                                    unit.draw(ctx)
+                                }
+                                unit.unitImage.src = defaultSource;
+                            } else {
+                                ctx.clearRect(unit.x - unit.r * imageScale * 1.2, unit.y - unit.r * imageScale * 1.2, unit.r * 2 * imageScale * 1.2, unit.r * 2 * imageScale * 1.2)
+                                units[chosenBallIdx].unitImage.onload = () => {
+                                    unit.draw(ctx)
+                                }
+                                units[chosenBallIdx].unitImage.src = chosenBallSource;
+                            }
+                        });
+                        
+                        let randBallIdx,storedRBI;
+                        do {
+                            randBallIdx = Math.floor(Math.random() * unitnum)
+                        } while ( count <= 3 && randBallIdx === chosenBallIdx || randBallIdx === storedRBI );
+                        storedRBI = randBallIdx;
+
+                        let rcb = units[randBallIdx];
+                        ctx.clearRect(rcb.x - rcb.r * imageScale * 1.2, rcb.y - rcb.r * imageScale * 1.2, rcb.r * 2 * imageScale * 1.2, rcb.r * 2 * imageScale * 1.2)
+
+                        units[randBallIdx].unitImage.src = randBallSource;
+                        units[randBallIdx].unitImage.onload = () => {
+                            units[randBallIdx].draw(ctx)
+                        }
+                        
+                        finalBallIdx = randBallIdx
+                        count += 1
+                                                    
+                        setTimeout(run, gameSpeed);
+                    }
+                }
+                
+                if (chosenBallIdx+1) {
+                    startBtn.removeEventListener('click', initializeGame);
+                    canvas.removeEventListener('click', choiceEvent);
+                    
+                    run();
+                    Timer();
+                    addStopPoint();    
+                } else {
+                    console.warn('[UNIT SELECTION]: Rule disobedience!');
+
+                    const BG = d.querySelector('.bg')
+                    const back = d.createElement('div');
+                    const h1 = d.createElement('h1');
+
+                    back.id = 'alert';
+                    h1.id = 'alert-h1';
+                    h1.textContent = 'select a unit';
+
+                    back.appendChild(h1);
+                    d.body.appendChild(back);
+
+                    setTimeout(() => { d.body.removeChild(d.querySelector('#alert')); BG.style.boxShadow = 'inset 0 -1vh 3vh var(--c-primary),inset 0 -.6vh .5vh var(--c-secondary)'; },1500);
+                }
+            };
+            
+            canvas.addEventListener('click', choiceEvent);
+            startBtn.addEventListener('click', initializeGame);
+            reTryBtn.addEventListener('click', setupGameOrRetry);
+    
+            function setupGameOrRetry() {
+                abortController.abort();
+
+                const wanimCanvas = d.getElementById("wanim-canvas");
+                wanimCanvas.remove();
+                
+                count = 0
+                time = Math.max(maxMinTime,timeLimit)
+                timer.textContent = `${time.toFixed(2)}s`
+    
+                end = false
+                tapToFinish = false
+                chosenBallIdx = NaN
+                finalBallIdx = NaN
+    
+                FillCanvas();
+                spawnBalls();
+    
+                endContainer.style.display = 'none'
+    
+                canvas.removeEventListener('click', choiceEvent);
+                startBtn.removeEventListener('click', initializeGame);
+                canvas.addEventListener('click', choiceEvent);
+                startBtn.addEventListener('click', initializeGame);
+            }
+            
+            // canvas setup
+            function InjectCanvas() {
+                const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1))
+                const { clientWidth:w, clientHeight:h } = canvas
+                canvas.width = w*dpr
+                canvas.height = h*dpr
+                ctx.setTransform(dpr,0,0,dpr,0,0)
+                
+                FillCanvas();
+                drawBalls();
+            }
+            function FillCanvas() {
+                const W = canvas.clientWidth, H = canvas.clientHeight            
+    
+                ctx.clearRect(0,0,W,H)
+                ctx.fillStyle = 'rgba(0,0,0,0)'
+                ctx.fillRect(0,0,W,H)
+            }
+    
+            new ResizeObserver(InjectCanvas).observe(canvas);
+            InjectCanvas();
+        }
+        
+        // win animation
+        function winAnim() {
+            const endContainer = d.querySelector('.end-container');
+            const waCanvas = `<canvas id="wanim-canvas"></canvas>`;
+            endContainer.insertAdjacentHTML('afterbegin', waCanvas)
+
+            const wanimCanvas = d.getElementById("wanim-canvas");
+            const ctxwa = wanimCanvas.getContext("2d");
+
+            console.log(wanimCanvas.clientWidth,wanimCanvas.clientHeight);
+            const dprwa = Math.max(1, Math.min(2, window.devicePixelRatio || 1))
+            wanimCanvas.width = wanimCanvas.clientWidth * dprwa
+            wanimCanvas.height = wanimCanvas.clientHeight * dprwa
+            ctxwa.setTransform(dprwa,0,0,dprwa,0,0)
+            ctxwa.clearRect(0, 0, wanimCanvas.width, wanimCanvas.height);
+            
+            const centerX = wanimCanvas.width / 2;
+            const centerY = wanimCanvas.height / 2;
+            
+            const particles = [];
+            const startNum = 10;
+            
+            const folders = ['colored','plain','selected'];
+            const offset = 30;
+            
+            class Particle {
+                constructor(prevXPos) {
+                    const offset = 40;
+                    const w = wanimCanvas.clientWidth;
+                    const h = wanimCanvas.clientHeight;
+
+                    this.x = offset + (Math.random() * (w - offset * 2));
+                    this.y = -10;
+                    this.d = 30 + (Math.random() * 8 - 3);
+                    
+                    if (prevXPos) {
+                        if (this.x > prevXPos - this.d && this.x < prevXPos + this.d) {
+                            console.log('RE triggered');
+                            while (this.x == prevXPos) {
+                                this.x = offset + (Math.random() * (w - offset * 2));
+                            }
+                        } else { 
+                            console.log('Noraml spawn');
+                            // console.log(`${this.x > prevXPos - this.d && this.x < prevXPos + this.d}\nparticle.x: ${this.x}\nprevious x: ${prevXPos}\nparticle.d: ${this.d}`)
+                        }
+                    }
+                    
+                    this.vy = 0.5 + Math.random() / 4;
+                    this.life = 300 + Math.random() * 600;
+                    this.angle = 0;
+                    this.rotateSpeed = .02;
+
+                    const folders = ['colored','plain','selected'];
+                    
+                    if (win) {
+                        this.source = `assets/${folders[Math.floor(Math.random() * 2)]}/${object}.png`;
+                    } else {
+                        let idxs = [0,2];
+                        this.source = `assets/${folders[idxs[Math.floor(Math.random() * 2)]]}/${object}.png`;
+                    }
+                    this.image = new Image();
+                    this.image.src = this.source;
+                }
+                update() {
+                    this.y += this.vy;
+                    this.angle += this.rotateSpeed;
+
+                    if (this.angle >= Math.PI/6) {
+                        this.rotateSpeed *= -1;
+                    } else if (this.angle <= -Math.PI/6) {
+                        this.rotateSpeed *= -1;
+                    }
+                    this.life--;
+                }
+                draw() {
+                    ctxwa.save();
+                    ctxwa.globalAlpha = Math.max(0, Math.min(1, this.life / 150));
+                    ctxwa.translate(this.x, this.y);
+                    ctxwa.rotate(this.angle);
+                    ctxwa.drawImage(this.image, -this.d/2, -this.d/2, this.d, this.d);
+                    ctxwa.restore();
+                }
+            }
+
+            // console.log(particles.at(-1))
+            particles.push(new Particle());
+            function spawn() {
+                setTimeout(() => {
+                    particles.push(new Particle(particles.at(-1).x));
+                    spawn();
+                }, 500);
+            };
+            spawn();
+            
+            function animate() {
+                ctxwa.clearRect(0, 0, wanimCanvas.width, wanimCanvas.height);
+            
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i];
+                    p.update();
+                    p.draw();
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
