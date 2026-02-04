@@ -2,378 +2,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        *{margin: 0; background: #000; font-family: futura; letter-spacing: 1;}
-        :root {
-            --box-primary-width: 100%;
-            --c-primary: rgb(0,255,166);
-            --c-secondary: rgb(0,81,255);
-            --c-complimentary: rgb(255,0,89);
-            --blur: 7px;
-        }
-        body {
-            display: flex; 
-            flex-direction: column;
-            align-items: center;
-            background: none;
-        }
-        .bg {
-            top: 0;
-            left: 0;
-            position: absolute;
-            width: var(--box-primary-width);
-            height: 100%;
-            background: #000;
-            background: 
-                radial-gradient(circle at 50% -60%, rgb(0,255,166,1), transparent 60%),
-                radial-gradient(circle at 50% -60%, rgb(0,81,255,1), transparent 50%),
-                #000;
-            box-shadow:
-                inset 0 -1vh 3vh var(--c-primary),
-                inset 0 -.6vh .5vh var(--c-secondary);
-            z-index: -800;
-        }
-        .game-setup {
-            top: 0;
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            width: calc(var(--box-primary-width) * .6);
-            height: fit-content;
-            margin-top: 40%;
-            padding: 8vh 0 2vh 0;
-            border-radius: 1vh;
-            box-shadow: 
-                0 1vh 2vh rgb(0,255,166,1), 
-                inset 0 -1.2vh 3vh var(--c-primary),
-                inset 0 -.5vh .5vh var(--c-secondary);
-            color: white;
-            z-index: 999;
-        }
-        .game-setup div {
-            position: relative;
-            /* height: fit-content; */
-        }
-        input[type=range] {
-            --move: -13vh;
-            --top: -.1vh;
-            --dotSize: .7vh;
-            --dotSpace: 100%;
-            --round: 35;
-            -webkit-appearance: none;
-            appearance: none;
-            background: none;
-            margin-top: .7vh;
-            height: 1vh;
-            border: none;
-            border-bottom: .4vh solid rgb(0,255,166,.2);
-            /* border-image: repeating-radial-gradient(
-                to right, 
-                var(--c-primary) 0 var(--dotSize), 
-                transparent var(--dotSize) var(--dotSpace)
-            ) var(--round) round;
-            -webkit-border-image: repeating-radial-gradient(
-                circle at center, 
-                var(--c-primary) 0 var(--dotSize), 
-                transparent var(--dotSize) var(--dotSpace)
-            ) var(--round) round; */
-            background: black;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            appearance: none;
-            --size: 4vh;
-            width: var(--size);
-            height: var(--size);
-            background: url(assets/unk/roller.png);
-            background-size: cover;
-            /* background-position: center; */
-            background-repeat: no-repeat;
-            transform: translateY(1.5vh) rotateZ(45deg) scaleX(-1);
-        }
-        .game-setup label {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            background: none;
-        }
-        .game-setup span {
-            font-size: xx-large;
-            font-weight: 600;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, var(--c-primary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.8vh;
-        }
-        .game-setup h3 {
-            margin: 11.5vh 0 1vh 0;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, var(--c-complimentary), var(--c-complimentary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .unit-style {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2vh;
-            width: 90%;
-            height: 12vh;
-            padding: 3vh 0 7vh 0;
-            background: none;
-            mask: linear-gradient(to bottom,transparent,black 30% 70%,transparent);
-            overflow: scroll;
-            z-index: 999;
-        }
-        .unit-style::-webkit-scrollbar {
-            display: none;
-        }
-        #uslta {
-            --uslta-w: 6vh;
-            --theme: var(--c-complimentary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: var(--uslta-w);
-            height: 3vh;
-            margin-top: 4vh;
-            border: solid .35vh var(--theme);
-            box-shadow: 
-                inset 0 -.4vh 1vh var(--theme),
-                0 .2vh .6vh var(--theme);
-            border-top: none;
-            border-radius: 1vh;
-            padding: 1vh;
-            color: lightgray; 
-            transition: 1s;
-        }
-        #uslta::before {
-            content: '';
-            top: 0;
-            left: 0;
-            position: absolute;
-            width: 97%;
-            height: .35vh;
-            border-radius: 1vh 1vh 0 0;
-            transform: translate(1.5%,.01vh);
-            background: linear-gradient(to right, var(--theme),transparent,transparent,var(--theme));
-            /* transition-delay: .4s; */
-        }
-        #uslta:hover > img {
-            cursor: pointer;
-            transform: translateY(-40%) scale(1.1);
-        }
-        #uslta img {
-            --size: var(--uslta-w);
-            width: var(--size);
-            height: var(--size);
-            background: none;
-            transform: translateY(-30%);
-            transition: .5s;
-        }
-        .container {
-            margin: auto;
-            width: var(--box-primary-width);
-            height: 73%;
-            transform: translateY(13%);
-            background: none;
-            z-index: 0;
-        } 
-        #space {
-            display: none;
-        }
-        canvas {
-            width: 100%;
-            height: inherit;  
-            background: none;  
-        }
-        #game-setup-btn {
-            top: 0;
-            position: absolute;
-            filter: invert(100%) brightness(180%);
-            margin: 9.4vh 0 0 0;
-            width: fit-content;
-            height: fit-content;
-            background: none;
-        }
-        #game-setup-btn img {
-            --size: 4vh; 
-            width: var(--size);
-            height: var(--size);
-            background: none;
-        }
-        #timer {
-            top: 0;
-            position: absolute;
-            margin-top: 2vh;
-            background: none;
-            color: var(--c-complimentary);
-            font-family: futura;
-            font-weight: 600;
-            font-size: xx-large;
-            text-transform: uppercase;
-        }
-        #chosen, #target {
-            --offset: 28vh;
-            top: 0;
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 13vh;
-            margin-top: 2vh;
-            background: none;
-        }
-        #chosen {
-            margin-right: var(--offset);
-        }
-        #target {
-            margin-left: var(--offset);
-        }
-        #chosen img, #target img {
-            --size: 4.15vh;
-            width: var(--size);
-            height: var(--size);
-            padding: 1vh;
-            background: none;
-            /* border: solid .3vh var(--c-primary); */
-            border-radius: 1vh;
-        }
-        #chosen p, #target p {
-            color: lightgray;
-            font-size: x-small;
-            font-weight: 900;
-            text-transform: uppercase;
-            text-align: center;
-            margin-top: .2vh;
-            background: none;
-        }
-        button {
-            width: var(--box-primary-width);
-            height: 15vh;
-            border: none;
-            font-family: futura;
-            font-weight: 600;
-            font-size: x-large;
-            text-transform: uppercase;
-            background: radial-gradient(circle at 50% 350%, var(--c-primary), transparent 80%);
-            z-index: 0;
-            transition: .3s;
-        }
-        button:hover > span {
-            cursor: pointer;
-            transform: translateY(-1vh);
-            text-shadow: 0 0vh .2vh var(--c-primary);
-        }
-        button span {
-            background: linear-gradient(to bottom, var(--c-primary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: .3s;
-        }
-        .end-container {
-            top: 0;
-            left: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #00000049;
-            color: #fff;
-            backdrop-filter: blur(var(--blur));
-            -webkit-backdrop-filter: blur(var(--blur));
-            transition: 1s;
-            z-index: 999;
-        }
-        #wanim-canvas {
-            top: 0;
-            left: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 50% -100%, var(--c-primary) 30%, rgb(0,255,166,.1), transparent 100%),
-                transparent;
-            z-index: 0;
-        }
-        #verdict {
-            margin: 0 0 3vh 0;
-            background: linear-gradient(to bottom, var(--c-primary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: futura;
-            font-size: 10vh;
-            text-transform: uppercase;
-            z-index: 999;
-        }
-        #retry-btn {
-            --xn: 10;
-            width: 60%;
-            height: 7vh;
-            background: radial-gradient(circle at 50% 400%, var(--c-primary), #000000a7 80%);
-            border-radius: 1vh;
-            box-shadow: 
-                0 1vh 2vh rgb(0,255,166,1), 
-                inset 0 -1.2vh 3vh var(--c-primary),
-                inset 0 -.5vh .5vh var(--c-secondary);
-            transition: .3s;
-            z-index: 999;
-        }
-        #retry-btn:hover {
-            box-shadow: 
-                0 1.7vh 2vh rgb(0,255,166,1), 
-                inset 0 -1.2vh 3vh var(--c-primary),
-                inset 0 -.5vh .5vh var(--c-secondary);
-        }
-        #retry-btn span {
-            background: linear-gradient(to bottom, var(--c-primary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: large;
-            transition: .3s;
-        }
-        #alert {
-            top: 0;
-            position: absolute;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: var(--box-primary-width);
-            height: 100%;
-            /* background: 
-                radial-gradient(circle at -100% -0%, rgb(255,0,89,.5), #00000049); */
-            background: #00000049;
-            backdrop-filter: blur(var(--blur));
-            -webkit-backdrop-filter: blur(var(--blur));
-        }
-        #alert-h1 {
-            text-transform: uppercase;
-            font-size: xx-large;
-            background: linear-gradient(to bottom, var(--c-primary), transparent);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <title>Cool Reaction Game</title>
 </head>
 <body>
     <div class="bg"></div>
+
+    <div class="dashboard">
+        <h3>Preview</h3>
+        <div id="selected-style">
+            <span>
+                <h4>Current style:</h4>
+                <span>
+                    <h4 style="color: var(--c-primary);">colored</h4>
+                    <h4 style="color: #fff;">selected</h4>
+                    <h4 style="color: var(--c-complimentary);">target</h4>
+                </span>
+            </span>
+            <img id="dash-current-style" src="assets/colored/cube.png" alt="selected style">
+        </div>
+        <!-- <h3>Theme</h3>
+        <div class="theme-selection"></div> -->
+        <h3>Soundtrack</h3>
+        <div class="music">
+            <h5>playing now</h5>
+            <div class="playing-now">
+                <span>
+                    <img id="pn-cover" src="">
+                    <h5 id="current-title">--:--</h5>
+                </span>
+                <span>
+                    <div>
+                        <input id="song-slider" type="range" value="0" min="0" step="0.1">
+                        <div id="listened"></div>
+                    </div>
+                    <span id="controls-container">
+                        <h5 id="current-time">--:--</h5>
+                        <span id="controls">
+                            <!-- <img src="assets/unk/prev.png" onclick="prevBtn()"> -->
+                            <img src="assets/unk/play.png" onclick="playBtn()">
+                            <!-- <img src="assets/unk/next.png" onclick="nextBtn()"> -->
+                        </span>
+                        <h5 id="left-time">--:--</h5>
+                    </span>
+                </span>
+            </div>
+            <h5>tracks</h5>
+            <div class="track-list">
+                <h5>library</h5>
+            </div>
+            <h5>add your music</h5>
+            <span id="drop-zone">
+                <h5>Click to choose file</h5>
+                <h6>or drop it here</h6>
+                <input type="file" id="trackinput" name="trackinput" accept="audio/*">
+            </span>
+        </div>
+    </div>
+
+    <!-- Rules of the Game
+    Quick summary
+    You pick a unit (an object image) from the left selector, choose one visible unit on the canvas as your unit, then press start. During the run the game repeatedly highlights a random unit (the “target”). When you tap the canvas to stop, if the last highlighted unit equals the unit you originally chose → Win. If it’s different or time runs out → Loss. -->
 
     <div class="game-setup">
         <div>
@@ -382,12 +74,12 @@
                 <input type="range" name="nofunits" id="nofunits" min="5" max="30" value="10">
             </label>
         </div>
-        <h3>select style</h3>
+        <h3>pick style</h3>
         <div class="unit-style"></div>
     </div>
 
     <div class="container">
-        <canvas id="space"></canvas>
+        <canvas id="game-space"></canvas>
     </div>
     <span id="timer"></span>
     <button id="start-btn"><span id="bottom-btn">set</span></button>
@@ -396,34 +88,236 @@
         <h1 id="verdict"></h1>
         <button id="retry-btn"><span>play again</span></button>
     </div>
+
+    <div class="rules">
+        <p>Rules of the Game
+            Quick summary
+            You pick a unit (an object image) from the left selector, choose one visible unit on the canvas as your unit, then press start. During the run the game repeatedly highlights a random unit (the “target”). When you tap the canvas to stop, if the last highlighted unit equals the unit you originally chose → Win. If it’s different or time runs out → Loss.</p>
+    </div>
+
+    <!-- Soundtracks/Input -->
+    <script>
+        const d = document;
+
+        const trackList = d.querySelector('.track-list');
+        const soundLibrary = [
+            'Sunrise',
+            'Subwoofer Lullaby',
+            'Droopy likes ricochet',
+            'Haggstrom',
+            'Excuse',
+            'Living Mice',
+            'Moog City',
+            'Dog',
+            'Cat'
+        ]
+
+        function toTimeFormat(time) {
+            const minutes = Math.floor(time / 60);
+            const secs = Math.floor(time % 60);
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        const notification = d.createElement('div');
+        const playingCover = d.createElement('img');
+        const playingTitle = d.createElement('h5');
+
+        notification.className = 'playing-notification';
+
+        notification.append(playingCover,playingTitle);
+        d.body.insertAdjacentElement('afterbegin', notification);
+
+        const soundtracks = [];
+        let currentTrack = null;
+
+        const pnCover = d.getElementById('pn-cover');
+        const pnTitle = d.getElementById('current-title');
+        const pnCTime = d.getElementById('current-time');
+        const pnLTime = d.getElementById('left-time');
+        const pnPlayBtn = d.querySelector('#controls img');
+        const songSlider = d.getElementById('song-slider');
+
+        for (let trackName of soundLibrary) {
+            const trackLine = d.createElement('span');
+            const trackCover = d.createElement('img');
+            const trackTitle = d.createElement('h5');
+            const trackDuration = d.createElement('h5');
+
+            const imageNum = Math.floor(Math.random() * 5);
+
+            trackLine.className = 'track-line';
+            trackCover.src = `assets/sound/covers/cover${imageNum}.png`;
+            
+            trackTitle.textContent = trackName;
+            trackDuration.style.marginRight = '3vh';
+            trackDuration.style.textAlign = 'right';
+            
+            const track = new Audio(`assets/sound/tracks/${trackName}.mp3`);
+            track.addEventListener("loadedmetadata", () => {
+                trackDuration.textContent = toTimeFormat(track.duration);
+            });
+            function restartAnimation(el, animation) {
+                el.style.animation = 'none';
+                void el.offsetWidth;
+                el.style.animation = animation;
+            }
+            soundtracks.push(track.src);
+
+            trackLine.addEventListener('click', () => {
+                const coverImage = new Image();
+                coverImage.src = trackCover.src;
+
+                // new song
+                if (currentTrack && currentTrack !== track) {
+                    currentTrack.pause();
+                    currentTrack.currentTime = 0;
+                }
+                // if same —– pause, else —— play
+                if (currentTrack === track && !track.paused) {
+                    track.pause();
+
+                    pnPlayBtn.src = 'assets/unk/play.png';
+                    
+                    playingTitle.innerHTML = `<mark>${trackTitle.textContent}</mark> is paused`;
+                    restartAnimation(notification, 'notification linear 4s');
+                } else {
+                    track.play();
+                    currentTrack = track;
+                    
+                    pnPlayBtn.src = 'assets/unk/pause.png';
+
+                    coverImage.onload = () => {
+                        playingCover.src = trackCover.src;
+                        playingTitle.innerHTML = `<mark>${trackTitle.textContent}</mark> is playing`;
+                    };
+                    coverImage.src = trackCover.src;
+                    notification.style.setProperty("--n-bg-cover",`url(${coverImage.src})`);
+                    restartAnimation(notification, 'notification linear 4s');
+
+                    pnCover.src = trackCover.src;
+                    pnTitle.textContent = trackTitle.textContent;
+                    pnLTime.textContent = `-${trackDuration.textContent}`;
+                    
+                    track.addEventListener('timeupdate', () => {
+                        pnCTime.textContent = toTimeFormat(track.currentTime);
+                        const remaining = track.duration - track.currentTime;
+                        pnLTime.textContent = `-${toTimeFormat(remaining)}`;
+
+                        if (!isNaN(track.duration)) {
+                            const listened = (track.currentTime / track.duration) * 120;
+                            songSlider.style.setProperty('--listened',`${listened}%`);
+                        }
+
+                        if (track.currentTime == track.duration) {
+                            pnPlayBtn.src = 'assets/unk/play.png';
+                        }
+                    });
+                    songSlider.addEventListener('input', () => {
+                        if (!currentTrack || isNaN(currentTrack.duration)) return;
+                        currentTrack.currentTime = currentTrack.duration * ((songSlider.value) / 100);
+                    });
+                }
+            });
+            
+            trackLine.append(trackCover,trackTitle,trackDuration);
+            trackList.appendChild(trackLine);
+        }
+
+        trackList.addEventListener('scroll', () => {
+            if (trackList.scrollTop >= 10) {
+                trackList.style.maskImage = 'linear-gradient(to top, transparent, black 20% 80%, transparent)';
+            } else {
+                trackList.style.maskImage = 'linear-gradient(to top, transparent, black 20%)';
+            }
+        });
+
+        function playBtn() {
+            if (currentTrack) {
+                if (!currentTrack.paused) {
+                    currentTrack.pause();
+                    pnPlayBtn.src = 'assets/unk/play.png';
+                } else {
+                    currentTrack.play();
+                    pnPlayBtn.src = 'assets/unk/pause.png';
+                }
+            } else {
+                alert('Choose a soundtrack')
+            }
+        }
+        function playNext() {
+            for (let i = 0; i < soundtracks.length; i++) {
+                if (currentTrack && currentTrack !== track) {
+                //     currentTrack.pause();
+                //     currentTrack.currentTime = 0;
+                }
+                if (currentTrack === track && !track.paused) {
+                    // track.pause();
+
+                    // notification.style.setProperty('--n-bg-cover',`url(${trackCover.src})`);
+                    // playingCover.src = trackCover.src;
+                    // playingTitle.innerHTML = `<mark>${trackTitle.textContent}</mark> is paused.`;
+                    // restartAnimation(notification, 'notification linear 4s');
+                } else {
+                    // track.play();
+                    // currentTrack = track;
+                    
+                    // notification.style.setProperty('--n-bg-cover',`url(${trackCover.src})`);
+                    // playingCover.src = trackCover.src;
+                    // playingTitle.innerHTML = `<mark>${trackTitle.textContent}</mark> is playing.`;
+                    // restartAnimation(notification, 'notification linear 4s');
+                }
+            }
+        };
+
+        trackinput.addEventListener('change', () => {
+
+            if (trackinput.files.length > 0) {
+                // trackList.appendChild()
+            }
+            
+            // const dzH5 = d.querySelector('#drop-zone h5');
+            // const dzH6 = d.querySelector('#drop-zone h6');
+            // // const dzH6 = d.querySelector('#drop-zone h6');
+
+            // if (trackinput.files.length > 0) {
+            //     dzH6.remove();
+            //     dzH5.textContent = `${trackinput.files[0].name}`;
+            // } else {
+            //     const dzH6_new = d.createElement('h6');
+
+            //     dzH6_new.textContent = 'or drop it here';
+            //     dzH5.textContent = 'Click to choose file';
+
+            //     dzH5.insertAdjacentElement('afterend',dzH6_new);
+            // }
+        });
+    </script>
+    <!-- Desktop extension -->
     <script>
         const bg = document.querySelector('.bg')
+        const usltaIMGs = document.getElementById('uslta');
         const bgMultiplier = 1.2;
         if (window.innerWidth > window.innerHeight) {
             document.documentElement.style.setProperty('--box-primary-width','30%');
-            // bg.style.width = `calc(var(--box-primary-width) * 1.2)`;
             bg.style.display = 'none';
             bg.style.marginLeft = `${(window.innerWidth - bg.offsetWidth) / 2}px`;
             bg.style.boxShadow = 'inset 0 -1vh 3vh var(--c-primary), inset 0 -.6vh .5vh var(--c-secondary), 0 0 3vh var(--c-primary), 0 0 .5vh var(--c-secondary)';
-            document.body.style.background = 'radial-gradient(circle at -40% 50%, rgb(0,255,169,.6), transparent 40%), radial-gradient(circle at 140% 50%, rgb(0,255,169,.6), transparent 40%)';
-            document.querySelector('#space').style.border = 'solid .2vh rgb(0,255,169,.5)';
-            document.querySelector('#space').style.borderRadius = '1.7vh';
+            
+            const themePrimaryColor = getComputedStyle(document.documentElement).getPropertyValue('--c-primary');
+            var TPCrgb = themePrimaryColor.match(/\d+/g).join(",");
+            document.documentElement.style.setProperty('--tpc-rgb',`${TPCrgb}`);
+            document.body.style.background = `radial-gradient(circle at -40% 50%, rgb(${TPCrgb},.4), transparent 45%), radial-gradient(circle at 140% 50%, rgb(${TPCrgb},.4), transparent 45%)`;
+
             document.querySelector('.container').style.height = '65%';
             document.querySelector('.container').style.transform = 'translateY(15%)';
             document.getElementById('retry-btn').style.width = 'calc(var(--box-primary-width) * .6)';
         }
     </script>
+    <!-- Main -->
     <script>
         const GameSetupDiv = document.querySelector('.game-setup');
         GameSetupDiv.style.marginTop = `${(window.innerHeight - GameSetupDiv.offsetHeight) / 2}px`;
-        // document.documentElement.addEventListener('DOMContentLoaded', function () {
-        // })
-        // Main script
 
-
-
-        const d = document
-        
         const c = 'colored';
         const p = 'plain';
         const s = 'selected';
@@ -445,19 +339,24 @@
             'monkey',
             'dinosaur',
             'monster',
-            'dragon'
+            'penguin',
+            'car'
         ];
-        const unitStylingArea = d.querySelector('.unit-style')
+        const unitStylingArea = d.querySelector('.unit-style');
 
         for (let i = 0; i < objects.length; i++) {
             const el = d.createElement('div')
-            const img = d.createElement('img')
+            const imgDiv = d.createElement('div')
+            const dashCurStyle = d.getElementById('dash-current-style');
             
             if (object == objects[i]) el.style.setProperty('--theme','#fff')
             
             function selection() {
                 object = objects[i];
                 unitStylingArea.children[i].style.setProperty('--theme','#fff')
+                d.querySelector('.container').style.setProperty('--canva-bg',`url(assets/${c}/${object}.png)`)
+                dashCurStyle.src = `assets/${c}/${object}.png`;
+
                 console.warn('Style switched.')
                 console.log(`New style: ${object}`)
                 for (let idx = 0; idx < unitStylingArea.children.length; idx++) {
@@ -467,24 +366,106 @@
                 }
             }
 
+            if (objects[i].includes('frog')) {
+                el.className = 'tracked';
+            }
             el.id = 'uslta';
-            el.addEventListener('click', selection);
-            img.src = `assets/${c}/${objects[i]}.png`;
 
-            el.appendChild(img)
-            unitStylingArea.appendChild(el)
+            el.addEventListener('click', selection);
+            imgDiv.style.setProperty('--image',`url(assets/${c}/${objects[i]}.png)`);
+
+            el.appendChild(imgDiv);
+            unitStylingArea.appendChild(el);
+
         }
+        const spacer = d.createElement('div');
+        spacer.className = 'spacer';
+        unitStylingArea.appendChild(spacer);
         
+        const trackedEl = d.querySelector('.tracked');
+
+        const screenCenter = window.innerWidth / 2;
+        const minScale = 0.6;
+        const falloff = 200;
+
+        for (let obj of d.querySelectorAll('#uslta')) {
+            const rect = obj.getBoundingClientRect();
+            const objCenter = rect.left + rect.width / 2;
+            const distance = Math.abs(screenCenter - objCenter);
+            let scale = 1 - (distance / falloff);
+            
+            scale = Math.max(minScale, Math.min(1, scale));
+            obj.style.transform = `scale(${scale})`;
+        }
+        unitStylingArea.addEventListener('scroll', function () {
+            const screenCenter = window.innerWidth / 2;
+            const falloff = 200;
+
+            for (let obj of d.querySelectorAll('#uslta')) {
+                const rect = obj.getBoundingClientRect();
+                const objCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(screenCenter - objCenter);
+                let scale = 1 - (distance / falloff);
+                
+                scale = Math.max(.2, Math.min(1, scale));
+                obj.style.transform = `scale(${scale})`;
+            }
+        });
+
+        // Dashboard
+        const scrollBox = document.querySelector('#selected-style span span');
+        const styleOptions = document.querySelectorAll('#selected-style span span h4');
+        const dashImage = document.getElementById('dash-current-style');
+
+        
+        function updateCurrentStyle() {
+            const styleImages = {
+                colored: `assets/${c}/${object}.png`,
+                selected: `assets/${p}/${object}.png`,
+                target: `assets/${s}/${object}.png`
+            };
+
+            const boxRect = scrollBox.getBoundingClientRect();
+            const boxCenter = boxRect.top + boxRect.height / 2;
+
+            let closest = null;
+            let closestDist = Infinity;
+
+            styleOptions.forEach(h4 => {
+                const rect = h4.getBoundingClientRect();
+                const h4Center = rect.top + rect.height / 2;
+                const dist = Math.abs(h4Center - boxCenter);
+                if (dist < closestDist) {
+                closestDist = dist;
+                closest = h4;
+                }
+            });
+
+            if (closest) {
+                const styleName = closest.textContent.trim().toLowerCase();
+                if (styleImages[styleName]) {
+                dashImage.src = styleImages[styleName];
+                }
+            }
+        };
+
+        let scrollTimeout;
+        scrollBox.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(updateCurrentStyle, 120); // adjust delay if needed
+        });
+        updateCurrentStyle();
+
+        // styleOptions.forEach(h4 => observer.observe(h4));
+
         const timer = d.getElementById('timer')
         const setUpSection = d.querySelector('.game-setup');
-        const TheStartBtn = `<button id="start-btn"><span id="bottom-btn">start</span></button>`;
-        const TheSetBtn = `<button id="set-btn" onclick="closeGameSetUp()"><span id="bottom-btn">set</span></button>`;
-        var startBtn = d.getElementById('start-btn');
+        const startBtn = d.getElementById('start-btn');
         const startBtnSpan = d.getElementById('bottom-btn');
-        const canvas = d.querySelector('canvas');
+        const canvas = d.querySelector('#game-space');
         const ctx = canvas.getContext('2d',{ alpha: true });
         
-        const gameSpeed = 273; // equiv. > 1s // median human reaction time
+        const gameSpeed = 273; // median human reaction time
         
         const primaryColor = '#fff';
         const secondaryColor = 'rgb(255,0,89)';
@@ -495,7 +476,7 @@
         var unitnum = 0
         var time = 0
 
-        timer.textContent = `${maxMinTime.toFixed(2)}s`
+        timer.textContent = `10.00s`
 
         nofunits.addEventListener('input', () => {
             const nunitsVis = d.getElementById('nunitsvis');
@@ -518,7 +499,8 @@
                 timer.insertAdjacentHTML('afterend', target)
                 initialSetUp = false
             }
-            canvas.style.display = 'block'
+            d.querySelector('.container').style.setProperty('--canvas-bg-display','block')
+            d.querySelector('.container').style.setProperty('--canvas-bg-anim','canvasBGSpin 5s linear infinite')
             startBtn.onclick = null;
             startBtnSpan.textContent = 'start';
             setUpSection.style.display = 'none';
@@ -815,8 +797,6 @@
             new ResizeObserver(InjectCanvas).observe(canvas);
             InjectCanvas();
         }
-        
-        // win animation
         function winAnim() {
             const endContainer = d.querySelector('.end-container');
             const waCanvas = `<canvas id="wanim-canvas"></canvas>`;
